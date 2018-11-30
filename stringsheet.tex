@@ -1,0 +1,170 @@
+\documentclass[10pt,landscape]{article}
+\usepackage{amssymb,amsmath,amsthm,amsfonts}
+\usepackage{multicol,multirow}
+\usepackage{calc}
+\usepackage{ifthen}
+\usepackage[landscape]{geometry}
+\usepackage[colorlinks=true,citecolor=blue,linkcolor=blue]{hyperref}
+
+
+\ifthenelse{\lengthtest { \paperwidth = 11in}}
+    { \geometry{top=.5in,left=.5in,right=.5in,bottom=.5in} }
+	{\ifthenelse{ \lengthtest{ \paperwidth = 297mm}}
+		{\geometry{top=1cm,left=1cm,right=1cm,bottom=1cm} }
+		{\geometry{top=1cm,left=1cm,right=1cm,bottom=1cm} }
+	}
+\pagestyle{empty}
+\makeatletter
+\renewcommand{\section}{\@startsection{section}{1}{0mm}%
+                                {-1ex plus -.5ex minus -.2ex}%
+                                {0.5ex plus .2ex}%x
+                                {\normalfont\large\bfseries}}
+\renewcommand{\subsection}{\@startsection{subsection}{2}{0mm}%
+                                {-1explus -.5ex minus -.2ex}%
+                                {0.5ex plus .2ex}%
+                                {\normalfont\normalsize\bfseries}}
+\renewcommand{\subsubsection}{\@startsection{subsubsection}{3}{0mm}%
+                                {-1ex plus -.5ex minus -.2ex}%
+                                {1ex plus .2ex}%
+                                {\normalfont\small\bfseries}}
+\makeatother
+\setcounter{secnumdepth}{0}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0pt plus 0.5ex}
+% -----------------------------------------------------------------------
+
+\title{String Sheet}
+
+\newcommand*{\EndZeichen}{\texttt{\$}}
+\usepackage{mathtools} % coloneqq
+
+\newcommand{\IC}{\mathbin{{.}\,{.}}} %interval '\IC{}'
+
+\newcommand*{\abs}[1]{\ensuremath{\left|#1\right|}} % | |
+\newcommand*{\menge}[1]{\ensuremath{\left\{#1\right\}}} % | |
+
+\newcommand*{\instancename}[1]{\ensuremath{\mathsf{#1}}} %for instance names
+\newcommand*{\LPF} {\instancename{LPF}}
+\newcommand*{\LCPA} {\instancename{LCP}}
+\newcommand*{\PLCP}{\instancename{PLCP}}
+\newcommand*{\ISA} {\instancename{ISA}}
+\newcommand*{\SA}  {\instancename{SA}}
+\newcommand*{\BWT}  {\instancename{BWT}}
+\newcommand*{\textT}  {\instancename{T}}
+
+\newcommand*{\ibeg}[1]{\mathsf{b}(#1)}% beginning position of the interval #1
+\newcommand*{\iend}[1]{\mathsf{e}(#1)}% ending position of the interval #1
+
+\newcommand*{\functionname}[1]{{\ensuremath{\renewcommand{\rmdefault}{ptm}\fontfamily{ppl}\selectfont\textrm{\textup{#1}}}}} %for instance names
+\newcommand*{\select}{\functionname{select}}
+\newcommand*{\rank}{\functionname{rank}}
+\newcommand*{\lcp}{\functionname{lcp}}
+
+
+\newcommand*{\argmax}{\operatorname{argmax}}
+\newcommand*{\argmin}{\operatorname{argmin}}
+
+
+% -----------------------------------------------------------------------
+\begin{document}
+
+\raggedright
+\footnotesize
+
+\begin{center}
+     \Large{\textbf{String Sheet}} \\
+\end{center}
+\begin{multicols}{3}
+\setlength{\premulticols}{1pt}
+\setlength{\postmulticols}{1pt}
+\setlength{\multicolsep}{1pt}
+\setlength{\columnsep}{2pt}
+
+
+\section{Defs}
+$\Lambda$ := empty string
+
+
+\section{Trees}
+BP
+DFUDS
+LOUDS
+
+
+\section{Arrays}
+
+
+
+\begin{itemize}
+	\item $T[\SA[i-1]\IC{}n] \prec T[\SA[i]\IC{}n]~\forall i \in [2\IC{}n]$
+	\item $\BWT[i] \coloneqq \textT[(\SA[i] + n - 2 \mod n) + 1]$
+	\item $\Psi[i] \coloneqq \ISA[( {\SA[i]} \mod n) + 1 ]$
+	\item $\Phi[j] \coloneqq \SA[\ISA[j]-1]$
+	\item $\Phi^k[\SA[n]] = \SA[n-k] \forall~k \in [1\IC{}n]$.
+	\item $\LCPA[i] = \lcp(\SA[i], \SA[i-1]) \forall i \in [1\IC{}n]$
+	\item $\PLCP[ {\SA[i]} ] = \LCPA[i]$
+\end{itemize}
+
+irreducible
+\begin{itemize}
+	\item $\LCPA[i] = \PLCP[\SA[i]]$ irreducible $:\Leftrightarrow$ $\BWT[i] = \BWT[i-1]$.
+	\item $\PLCP[i]$ irreducible $\Rightarrow \PLCP[i] = \PLCP[i-1] - 1 \vee \Phi[i] = \Phi[i-1]+1$. \cite{karkkainen09plcp}
+\end{itemize}
+
+$
+	\LPF[j] \coloneqq \max\{\ell \mid $ there exists an $i \in [1\IC{}j-1]$ such that $T[i\IC{}i+\ell-1] = T[j\IC{}j+\ell-1]\}.
+$
+\cite{franek03lpf,crochemore08lpf}
+
+
+\section{Periods}
+
+Periodicity Lemma \cite{fine65uniqueness}
+Given a word~$\warm$ with two periods~$\period$ and~$\period'$ such that $\period+\period' \le \abs{\warm}$, 
+the greatest common divisor~$\gcd(\period,\period')$ of~$\period$ and~$\period'$ is also a period of~$\warm$.
+
+
+\section{Lyndon}
+
+$\textT \prec \textS \Rightarrow \textT \textS$ Lyndon?
+
+\section{Factorization}
+Let $\textT = F_1 \cdots F_z$.
+
+
+Lyndon factorization
+	\begin{itemize}
+	\item $F_i$ Lyndon  $\forall i \in [1..z] \vee$ $F_i \succeq F_{i+1} \forall i\in[1\IC{}z)$  \cite{chen58lyndon}
+		\item $F_i = T[\ibeg{F_i} .. x]$ where $x \coloneqq \argmin_{j > \ibeg{F_i}} \ISA[j] > \ISA[\ibeg{F_i}]$.
+		\item $F_i$ longest Lyndon prefix of $T[\ibeg{F_i}\IC{}]$.
+	\end{itemize}
+
+
+\newcommand*{\SubStrPrev}[2]{\mathcal{S}_{#1}(#2)}
+$s$-factorization
+$F_x \coloneqq \argmax_{S \in \SubStrPrev{j}{T} \cup \Sigma} \abs{S}$ 
+for all~$x$ with $1 \le x \le z$ and $j \coloneqq \abs{F_1\cdots F_{x-1}}+1$,
+where $\SubStrPrev{j}{\textT}$ is the set of substrings of $\textT$ that start \emph{strictly} before~$j$.
+
+classic LZ77-factorization
+$F_x$ is the shortest prefix of $F_x \cdots F_z$ occurring exactly once in $F_1 \cdots F_x$.
+
+LZ78 factorization
+$F_x=F'_x c$ with $F'_x = \argmax_{S \in \menge{F_y \mid y < x} \cup \menge{\Lambda} } \abs{S}$ and $c\in\Sigma$
+for all $1 \le x \le z$.
+
+
+
+backward search
+\[
+\ibeg{R_i} = C[P[i]] + \rank(\ibeg{R_{i+1}} + 1, P[i]) \text{~and~} \iend{R_i} = C[P[i]] + \rank(\iend{R_{i+1}}, P[i]).
+\]
+$P:$ pattern
+$C[i] := \abs{\menge{j \in [1\IC{}n] : T[j] < i}}$
+$R_i$: range of the pattern $P[i..n]$, i.e., $T[\SA[j]..\SA[j]+i-1] = P[i..n] \Leftrightarrow j \in R_i$
+
+
+
+
+\end{multicols}
+\end{document}
