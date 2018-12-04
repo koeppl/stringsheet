@@ -38,11 +38,21 @@
 
 \title{String Sheet}
 
+\newcommand*{\UnaryOperator}[2][]{%
+	\ifx&#1&%
+	\ensuremath{\mathop{}\mathopen{}#2\mathopen{}}%
+	\else%
+	\ensuremath{\mathop{}\mathopen{}#2\mathopen{}\left(#1\right)}%
+\fi%
+}
+\newcommand*{\Oh}[1]{\UnaryOperator[#1]{\mathcal{O}}}
 \newcommand*{\EndZeichen}{\texttt{\$}}
 \usepackage{mathtools} % coloneqq
 
-\newcommand{\IC}{\mathbin{{.}\,{.}}} %interval '\IC{}'
+\newcommand*{\IC}{\mathbin{{.}\,{.}}} %interval '\IC{}'
 
+\newcommand*{\gauss}[1]{\left\lfloor#1\right\rfloor} %
+\newcommand*{\upgauss}[1]{\left\lceil#1\right\rceil} %
 \newcommand*{\abs}[1]{\ensuremath{|#1|}} % | |
 \newcommand*{\menge}[1]{\ensuremath{\{#1\}}} % | |
 
@@ -64,7 +74,11 @@
 \newcommand*{\functionname}[1]{{\ensuremath{\renewcommand{\rmdefault}{ptm}\fontfamily{ppl}\selectfont\textrm{\textup{#1}}}}} %for instance names
 \newcommand*{\select}{\functionname{select}}
 \newcommand*{\rank}{\functionname{rank}}
+\newcommand*{\RMQ}{\functionname{RMQ}}
 \newcommand*{\lcp}{\functionname{lcp}}
+\newcommand*{\lce}{\functionname{lce}}
+\newcommand*{\psv}{\functionname{psv}}
+\newcommand*{\nsv}{\functionname{nsv}}
 
 
 \newcommand*{\argmax}{\operatorname{argmax}}
@@ -91,18 +105,27 @@
 \setlength{\columnsep}{2pt}
 
 
-\section{Defs}
+
+alphabet $\Sigma$, $T \in \Sigma$
+\begin{itemize}
+	\item constant $:\Leftrightarrow \abs{\Sigma} = \Oh{1}$
+	\item integer $:\Leftrightarrow \abs{\Sigma} = \abs{T}^{\Oh{1}}$
+	\item finite $\abs{\Sigma} < \infty$
+	\item constant $\subset$ integer $\subset$ finite
+\end{itemize}
+
+\section{defs}
 \begin{multicols}{2}
 \begin{itemize}
 \item $\prec \coloneqq$ lexicographic order
 	\item $\varepsilon \coloneqq$  empty string
-	\item $\textT \coloneqq$ string, $T[\abs{T}] \coloneqq \EndZeichen$
+	\item $\textT \coloneqq$ string, $T[\abs{T}] \coloneqq \EndZeichen$, $\EndZeichen < T[i]~\forall i \in [1..\abs{T})$
 	\item $\textS \lhd \textT :\Leftrightarrow \textS[\lcp(\textS,\textT)] < \textT[\lcp(\textS,\textT)]$
 	\item $\textS \prec \textT :\Leftrightarrow  \textS \lhd \textT \vee \textS$ is proper prefix of $\textT$
 \end{itemize}
 \end{multicols}
 
-\section{Trees}
+\section{trees}
 
 \begin{multicols}{2}
 \begin{tikzpicture}[every node/.style={shape=circle,draw,inner sep=0.1em},scale=0.5, sibling distance=7em]
@@ -228,19 +251,19 @@ BP & (& (& (&)& (& (&)& (&)& )& (&)& )& (&)& (& (&)&  (& (&)& )&  )& ) \\
 
 
 
-\section{Arrays}
+\section{arrays}
 
 
 
 \begin{itemize}
-	\item $\SA$: $\textT[\SA[i-1]\IC{}n] \prec \textT[\SA[i]\IC{}n]~\forall i \in [2\IC{}n]$~\cite{manber93sa}
-	\item $\LCPA[i] = \lcp(\SA[i-1], \SA[i])~\forall i \in [2\IC{}n]$
-	\item $\PLCP[ {\SA[i]} ] \coloneqq \LCPA[i]$~\cite{kasai01lcp}
-	\item $\LPF[j] \coloneqq \max\{\ell \mid \exists i \in [1\IC{}j-1] : \textT[i\IC{}i+\ell-1] = \textT[j\IC{}j+\ell-1]\}$~\cite{franek03lpf,crochemore08lpf}
+	\item $\SA$: $\textT[\SA[i-1]\IC{}n] \prec \textT[\SA[i]\IC{}n]~\forall i \in [2\IC{}n]$, suffix array~\cite{manber93sa}
+	\item $\LCPA[i] = \lcp(\SA[i-1], \SA[i])~\forall i \in [2\IC{}n]$, longest common prefix array
+	\item $\PLCP[ {\SA[i]} ] \coloneqq \LCPA[i]$, permuted LCP array~\cite{kasai01lcp}
+	\item $\LPF[j] \coloneqq \max\{\ell \mid \exists i \in [1\IC{}j-1] : \textT[i\IC{}i+\ell-1] = \textT[j\IC{}j+\ell-1]\}$, longest previous factor array~\cite{franek03lpf,crochemore08lpf}
 \end{itemize}
 backward
 \begin{itemize}
-	\item $\BWT[i] \coloneqq \textT[\SA[i]-1]~\forall i \not= \ISA[1]$, $\BWT[\ISA[1]] \coloneqq \textT[n] = \EndZeichen$~\cite{burrows94bwt}
+	\item $\BWT[i] \coloneqq \textT[\SA[i]-1]~\forall i \not= \ISA[1]$, $\BWT[\ISA[1]] \coloneqq \textT[n] = \EndZeichen$, Burrows-Wheeler transform~\cite{burrows94bwt}
 	\item $\Phi[i] \coloneqq \SA[ {\ISA[i]} - 1]~\forall i \not= \ISA[1]$, $\Phi[\ISA[1]] \coloneqq n$~\cite{karkkainen09plcp}
 	\item $\Phi^{k}[i] = \SA[ ({\ISA[i]} + n - k-1 \mod n) + 1]~\forall i,k \in [1\IC{}n]$.
 \end{itemize}
@@ -258,11 +281,20 @@ irreducible
 
 
 
-\section{Periods}
+\section{regularity}
+
+\begin{itemize}
+	\item    $p \le \abs{T}/2$ period of $T :\Leftrightarrow \textT[i+p] = \textT[i] \forall i\in[1\IC{}\abs{T}-p]$
+	\item    $T$ primitive $:\Leftrightarrow \nexists$ period of $T$
+	\item    exponent $\exp(T) \coloneqq \abs{T}/p$, $p:$ minimal period of $T$
+\end{itemize}
 
 Periodicity Lemma~\cite{fine65uniqueness}:
 $\textT$ has periods~$p$ and~$p'$ with $p+p' \le \abs{\textT} \Rightarrow \gcd(p,p')$ is period of~$\textT$.
 
+%TODO: period, exponent, primitive, palindrome, square
+
+%TODO: runs theorem: #runs, #exponents
 
 \section{Lyndon}
 
@@ -277,7 +309,7 @@ If $\textT$ Lyndon, then
 \end{itemize}
 \end{multicols}
 
-\section{Factorization}
+\section{factorization}
 Let $\textT = F_1 \cdots F_z$.
 
 \paragraph{Lyndon factorization}
@@ -306,12 +338,45 @@ $F_x \coloneqq \argmax \menge{ \abs{S} \mid S \in \Sigma^* \text{~occurs in~} T[
 x \in [1\IC{}z]$, where $j \coloneqq \abs{F_1\cdots F_{x-1}}$.
 
 
+
+SAIS
+	\begin{itemize}
+	   \item $\textT[i] < \textT[i+1] \Rightarrow \textT[i\IC{}]$ is $S$-type ($\textT[i\IC{}] \prec \textT[i+1\IC{}]$)
+	   \item $\textT[i] > \textT[i+1] \Rightarrow \textT[i\IC{}]$ is $L$-type ($\textT[i\IC{}] \succ \textT[i+1\IC{}]$)
+	   \item $\textT[i] = \textT[i+1] \Rightarrow \textT[i\IC{}]$ type of $\textT[i+1\IC{}..]$
+	   \item $\textT[i\IC{}]$ is $S$-type $\wedge$ $\textT[i-1\IC{}]$ is $L$-type $\Rightarrow \textT[i\IC{}]$ is $S^*$-type
+	\end{itemize}
+
+operations
+	\begin{itemize}
+	   \item $\textT.\psv(j) \coloneqq \max { k < j \mid \textT[k] < \textT[j] }$ previous smaller value
+	   \item $\textT.\nsv(j) \coloneqq \min { k > j \mid \textT[k] < \textT[j] }$ next smaller value
+	   \item $\textT.\rank_c(j) \coloneqq \menge{ k \in [1\IC{}j] \mid \textT[k] = c }$ rank query
+	   \item $\textT.\select_c(k) \coloneqq \min \menge{j \mid \textT.\rank_c(j) = k}$ select query
+	   \item $\textT.\RMQ[a,b] \coloneqq \argmin_{i \in [a\IC{}b]} T[i]$ range minimum query
+	   \item $\textT.\lce(a,b) \coloneqq \lcp(T[a\IC{}],T[b\IC{}]) = \LCPA.\RMQ[\min(\ISA[a],\ISA[b])+1\IC{}\max(\ISA[a],\ISA[b])]$ longest common extension
+	\end{itemize}
+
+
+entropy 
+\begin{itemize}
+\item Let $\Sigma \coloneqq \menge{c_1, \ldots, c_\sigma}$.
+	\item    $H_0(\textT) \coloneqq (1/n)\sum_{j=1}^{\sigma} n_j \lg(n/n_j)$, $n_j \coloneqq \abs{\menge{i : \textT[i] = c_j}}$
+	\item    $H_k(\textT) \coloneqq (1/n) \sum_{\textS \in \Sigma^k} \abs{\textT_{\textS}} H_0(\textT_{\textS})$,
+where $\textT_{\textS}$ is the concatenation of each character in $\textT$ that directly follows an occurrence of the substring~$\textS \in \Sigma^k$ in $\textT$.
+\end{itemize}
+
+
+
+word-packing: $T'[i] = T[(i-1) \gauss{\lg_\sigma n}+1 \IC{} (i+1) \gauss{\lg_\sigma n}]$
+
 \subsection{BWT Related}
 
 FM-index~\cite{ferragina00fmindex} backward search:
 \begin{itemize}
 	\item   $P:$ pattern
 	\item   $\arrC[i] := \abs{\menge{j \in [1\IC{}n] : \textT[j] < i}}$
+	%TODO rewrite as LF-mapping
 	\item   $R_i$: range of the pattern $P[i\IC{}n]$, i.e., $\textT[\SA[j]\IC{}\SA[j]+i-1] = P[i\IC{}n] \Leftrightarrow j \in R_i$
 	\item $\ibeg{R_i} = \arrC[P[i]] + \rank(\ibeg{R_{i+1}} + 1, P[i])$
 	\item $\iend{R_i} = \arrC[P[i]] + \rank(\iend{R_{i+1}}, P[i])$
