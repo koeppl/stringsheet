@@ -3,6 +3,7 @@
 \usepackage{multicol,multirow}
 \usepackage{calc}
 \usepackage{ifthen}
+\usepackage{diagbox}
 \usepackage[landscape]{geometry}
 \usepackage[colorlinks=true,citecolor=blue,linkcolor=blue]{hyperref}
 
@@ -62,6 +63,7 @@
 \newcommand*{\PLCP}{\instancename{PLCP}}
 \newcommand*{\ISA} {\instancename{ISA}}
 \newcommand*{\SA}  {\instancename{SA}}
+\newcommand*{\LF}  {\instancename{LF}}
 \newcommand*{\BWT}  {\instancename{BWT}}
 \newcommand*{\arrC}  {\instancename{C}}
 
@@ -152,6 +154,7 @@ alphabet $\Sigma$, $T \in \Sigma$
 	\item   LOUDS~\cite{jacobson89rank}
 	\item   BP~\cite{jacobson89rank}
 \end{itemize}
+$2n + \Oh{1}$ bits for $n$ nodes.
    
 \end{multicols}
 
@@ -254,15 +257,31 @@ BP & (& (& (&)& (& (&)& (&)& )& (&)& )& (&)& (& (&)&  (& (&)& )&  )& ) \\
 \section{arrays}
 
 
+\begin{tabular}{|l|l|l|}
+   \hline
+   \diagbox{order}{dir} & $\leftarrow$ & $\rightarrow$ \\
+   \hline
+   \SA{} & $\LF$ & $\Psi$ \\
+   \hline
+   $\textT$  & $\Phi$ & \\
+   \hline
+\end{tabular}%
+
+
+
+
 
 \begin{itemize}
 	\item $\SA$: $\textT[\SA[i-1]\IC{}n] \prec \textT[\SA[i]\IC{}n]~\forall i \in [2\IC{}n]$, suffix array~\cite{manber93sa}
 	\item $\LCPA[i] = \lcp(\SA[i-1], \SA[i])~\forall i \in [2\IC{}n]$, longest common prefix array
 	\item $\PLCP[ {\SA[i]} ] \coloneqq \LCPA[i]$, permuted LCP array~\cite{kasai01lcp}
 	\item $\LPF[j] \coloneqq \max\{\ell \mid \exists i \in [1\IC{}j-1] : \textT[i\IC{}i+\ell-1] = \textT[j\IC{}j+\ell-1]\}$, longest previous factor array~\cite{franek03lpf,crochemore08lpf}
+	\item   $\arrC[i] := \abs{\menge{j \in [1\IC{}n] : \textT[j] < i}}$
 \end{itemize}
 backward
 \begin{itemize}
+   \item $\LF[i] := C[\BWT[i]] + \BWT.\rank_{L[i]}(i)$
+   \item $\LF[i] = \ISA[\SA[i] - 1]$~\cite{ferragina05index}
 	\item $\BWT[i] \coloneqq \textT[\SA[i]-1]~\forall i \not= \ISA[1]$, $\BWT[\ISA[1]] \coloneqq \textT[n] = \EndZeichen$, Burrows-Wheeler transform~\cite{burrows94bwt}
 	\item $\Phi[i] \coloneqq \SA[ {\ISA[i]} - 1]~\forall i \not= \ISA[1]$, $\Phi[\ISA[1]] \coloneqq n$~\cite{karkkainen09plcp}
 	\item $\Phi^{k}[i] = \SA[ ({\ISA[i]} + n - k-1 \mod n) + 1]~\forall i,k \in [1\IC{}n]$.
@@ -270,13 +289,21 @@ backward
 forward
 \begin{itemize}
 	\item $\Psi[i] \coloneqq \ISA[ {\SA[i]} + 1 ]~\forall i \not= \ISA[n]$, $\Psi[\ISA[n]] \coloneqq \ISA[1]$
+	\item $\Psi[i] = \select_c(\BWT, j)$, $c := \max {c \in \Sigma : C[c] < i}$~\cite{grossi05csa}
 	\item $\Psi^{k}[i] = \SA[ ({\ISA[i]} + k-1 \mod n) + 1]~\forall i,k \in [1\IC{}n]$.
 \end{itemize}
-
-irreducible
+properties
 \begin{itemize}
-	\item $\LCPA[i] = \PLCP[\SA[i]]$ irreducible $:\Leftrightarrow$ $\BWT[i] = \BWT[i-1]$.
-	\item $\PLCP[i]$ irreducible $\Rightarrow \PLCP[i] = \PLCP[i-1] - 1 \wedge \Phi[i] = \Phi[i-1]+1$. \cite{karkkainen09plcp}
+	\item    $\Psi \mid_{[C[c]+1,C[c+1]}$ strictly increasing $\forall c \in \Sigma$.
+	\item    $T[\SA[i]] = c \wedge \BWT[\Psi[i]] = c \forall i \in [C[c]+1,C[c+1] \forall c \in \Sigma$
+\end{itemize}
+
+
+reducible LCP values
+\begin{itemize}
+	\item $\LCPA[i] = \PLCP[\SA[i]]$ reducible $:\Leftrightarrow$ $\BWT[i] = \BWT[i-1]$.
+	\item $\PLCP[i+1]$ reducible $\Leftrightarrow T[i] = T[\Phi[i]] \wedge \Psi[\ISA[\Phi[i]]] = \Psi[\ISA[i]]-1$. \cite{siren10plcp}
+	\item $\PLCP[i]$ reducible $\Rightarrow \PLCP[i] = \PLCP[i-1] - 1 \wedge \Phi[i] = \Phi[i-1]+1$. \cite{karkkainen09plcp}
 \end{itemize}
 
 
@@ -349,8 +376,8 @@ SAIS
 
 operations
 	\begin{itemize}
-	   \item $\textT.\psv(j) \coloneqq \max { k < j \mid \textT[k] < \textT[j] }$ previous smaller value
-	   \item $\textT.\nsv(j) \coloneqq \min { k > j \mid \textT[k] < \textT[j] }$ next smaller value
+	   \item $\textT.\psv(j) \coloneqq \max \{ k < j \mid \textT[k] < \textT[j] \}$ previous smaller value
+	   \item $\textT.\nsv(j) \coloneqq \min \{ k > j \mid \textT[k] < \textT[j] \}$ next smaller value
 	   \item $\textT.\rank_c(j) \coloneqq \menge{ k \in [1\IC{}j] \mid \textT[k] = c }$ rank query
 	   \item $\textT.\select_c(k) \coloneqq \min \menge{j \mid \textT.\rank_c(j) = k}$ select query
 	   \item $\textT.\RMQ[a,b] \coloneqq \argmin_{i \in [a\IC{}b]} T[i]$ range minimum query
@@ -375,7 +402,6 @@ word-packing: $T'[i] = T[(i-1) \gauss{\lg_\sigma n}+1 \IC{} (i+1) \gauss{\lg_\si
 FM-index~\cite{ferragina00fmindex} backward search:
 \begin{itemize}
 	\item   $P:$ pattern
-	\item   $\arrC[i] := \abs{\menge{j \in [1\IC{}n] : \textT[j] < i}}$
 	%TODO rewrite as LF-mapping
 	\item   $R_i$: range of the pattern $P[i\IC{}n]$, i.e., $\textT[\SA[j]\IC{}\SA[j]+i-1] = P[i\IC{}n] \Leftrightarrow j \in R_i$
 	\item $\ibeg{R_i} = \arrC[P[i]] + \rank(\ibeg{R_{i+1}} + 1, P[i])$
