@@ -47,6 +47,7 @@
 \fi%
 }
 \newcommand*{\Oh}[1]{\UnaryOperator[#1]{\mathcal{O}}}
+\newcommand*{\Ot}[1]{\ensuremath{\Theta(#1)}}
 \newcommand*{\EndZeichen}{\texttt{\$}}
 \usepackage{mathtools} % coloneqq
 
@@ -82,6 +83,8 @@
 \newcommand*{\psv}{\functionname{psv}}
 \newcommand*{\nsv}{\functionname{nsv}}
 
+\newcommand*{\NN}{\mathbb{N}}
+
 
 \newcommand*{\argmax}{\operatorname{argmax}}
 \newcommand*{\argmin}{\operatorname{argmin}}
@@ -91,15 +94,22 @@
 
 \usepackage{lilyglyphs}
 
+\usepackage{fancyhdr}
+\fancyhf{} 
+\fancyhead[C]{{\Large{\textbf{String Sheet \twoBeamedQuavers}}}}
+\fancyhead[R]{\url{https://github.com/koeppl/stringsheet}}
+\renewcommand{\headrulewidth}{0pt}
+
+
+
 % -----------------------------------------------------------------------
 \begin{document}
+\thispagestyle{fancy}
+
 
 \raggedright
 \footnotesize
 
-\begin{center}
-     \Large{\textbf{String Sheet \twoBeamedQuavers}} \\
-\end{center}
 \begin{multicols}{2}
 \setlength{\premulticols}{1pt}
 \setlength{\postmulticols}{1pt}
@@ -108,15 +118,7 @@
 
 
 
-alphabet $\Sigma$, $T \in \Sigma$
-\begin{itemize}
-	\item constant $:\Leftrightarrow \abs{\Sigma} = \Oh{1}$
-	\item integer $:\Leftrightarrow \abs{\Sigma} = \abs{T}^{\Oh{1}}$
-	\item finite $\abs{\Sigma} < \infty$
-	\item constant $\subset$ integer $\subset$ finite
-\end{itemize}
-
-\section{defs}
+\paragraph{notation}
 \begin{multicols}{2}
 \begin{itemize}
 \item $\prec \coloneqq$ lexicographic order
@@ -124,8 +126,36 @@ alphabet $\Sigma$, $T \in \Sigma$
 	\item $\textT \coloneqq$ string, $T[\abs{T}] \coloneqq \EndZeichen$, $\EndZeichen < T[i]~\forall i \in [1..\abs{T})$
 	\item $\textS \lhd \textT :\Leftrightarrow \textS[\lcp(\textS,\textT)] < \textT[\lcp(\textS,\textT)]$
 	\item $\textS \prec \textT :\Leftrightarrow  \textS \lhd \textT \vee \textS$ is proper prefix of $\textT$
+	\item $w \coloneqq$ word size
 \end{itemize}
 \end{multicols}
+
+alphabet $\Sigma$
+\begin{itemize}
+	\item constant $:\Leftrightarrow \abs{\Sigma} = \Oh{1}$
+	\item integer $:\Leftrightarrow \abs{\Sigma} = n^{\Oh{1}}$ for problem size~$n$
+	\item finite $\abs{\Sigma} < \infty$
+	\item constant $\subset$ integer $\subset$ finite
+\end{itemize}
+
+
+\section{entropy}
+\begin{itemize}
+\item Let $\Sigma \coloneqq \menge{c_1, \ldots, c_\sigma}$.
+	\item    $H_0(\textT) \coloneqq (1/n)\sum_{j=1}^{\sigma} n_j \lg(n/n_j)$, $n_j \coloneqq \abs{\menge{i : \textT[i] = c_j}}$
+	\item    $H_k(\textT) \coloneqq (1/n) \sum_{\textS \in \Sigma^k} \abs{\textT_{\textS}} H_0(\textT_{\textS})$,
+where $\textT_{\textS}$ is the concatenation of each character in $\textT$ that directly follows an occurrence of the substring~$\textS \in \Sigma^k$ in $\textT$.
+\end{itemize}
+
+\section{computational model}
+\begin{itemize}
+   \item cell probe model: no cost for computation, counts only memory access $\Rightarrow$ for lower bounds~\cite{yao81sorted}
+   \item pointer machine model: time for any random access is constant
+   \item word RAM model: pointer machine model $~+~ \lg n = \Oh{w}$ access in constant time~\cite{hagerup98sorting}
+   \item Transdichotomous model: word RAM model with $\lg n = \Ot{w}$~\cite{fredman93fusion}
+\end{itemize}
+In word RAM model: word-packing: $T'[i] = T[(i-1) \gauss{\lg_\sigma w}+1 \IC{} (i+1) \gauss{\lg_\sigma w}]$
+
 
 \section{trees}
 
@@ -252,11 +282,35 @@ BP & (& (& (&)& (& (&)& (&)& )& (&)& )& (&)& (& (&)&  (& (&)& )&  )& ) \\
 \DrawId{2}{25}{1}{5em}
 \end{tikzpicture}
 
-
-
 \section{arrays}
+\begin{itemize}
+	\item $\SA$: $\textT[\SA[i-1]\IC{}n] \prec \textT[\SA[i]\IC{}n]~\forall i \in [2\IC{}n]$, suffix array~\cite{manber93sa}
+	\item $\LCPA[i] = \lcp(\SA[i-1], \SA[i])~\forall i \in [2\IC{}n]$, longest common prefix array
+	\item $\PLCP[ {\SA[i]} ] \coloneqq \LCPA[i]$, permuted LCP array~\cite{kasai01lcp}
+	\item $\LPF[j] \coloneqq \max\{\ell \mid \exists i \in [1\IC{}j-1] : \textT[i\IC{}i+\ell-1] = \textT[j\IC{}j+\ell-1]\}$, longest previous factor array~\cite{franek03lpf,crochemore08lpf}
+	\item   $\arrC[i] := \abs{\menge{j \in [1\IC{}n] : \textT[j] < i}}$
+\end{itemize}
 
+backward
+\begin{itemize}
+   \item $\LF[i] := C[\BWT[i]] + \BWT.\rank_{L[i]}(i)$
+   \item $\LF[i] = \ISA[\SA[i] - 1]$~\cite{ferragina05index}
+	\item $\BWT[i] \coloneqq \textT[\SA[i]-1]~\forall i \not= \ISA[1]$, $\BWT[\ISA[1]] \coloneqq \textT[n] = \EndZeichen$, Burrows-Wheeler transform~\cite{burrows94bwt}
+	\item $\Phi[i] \coloneqq \SA[ {\ISA[i]} - 1]~\forall i \not= \ISA[1]$, $\Phi[\ISA[1]] \coloneqq n$~\cite{karkkainen09plcp}
+	\item $\Phi^{k}[i] = \SA[ ({\ISA[i]} + n - k-1 \mod n) + 1]~\forall i,k \in [1\IC{}n]$.
+\end{itemize}
 
+\begin{multicols}{2}
+\begin{minipage}{\linewidth}
+forward
+\begin{itemize}
+	\item $\Psi[i] \coloneqq \ISA[ {\SA[i]} + 1 ]~\forall i \not= \ISA[n]$, $\Psi[\ISA[n]] \coloneqq \ISA[1]$
+	\item $\Psi[i] = \select_c(\BWT, j)$, $c := \max {c \in \Sigma : C[c] < i}$~\cite{grossi05csa}
+	\item $\Psi^{k}[i] = \SA[ ({\ISA[i]} + k-1 \mod n) + 1]~\forall i,k \in [1\IC{}n]$.
+\end{itemize}
+\end{minipage}
+\begin{minipage}{0.8\linewidth}
+\begin{flushright} 
 \begin{tabular}{|l|l|l|}
    \hline
    \diagbox{order}{dir} & $\leftarrow$ & $\rightarrow$ \\
@@ -266,32 +320,9 @@ BP & (& (& (&)& (& (&)& (&)& )& (&)& )& (&)& (& (&)&  (& (&)& )&  )& ) \\
    $\textT$  & $\Phi$ & \\
    \hline
 \end{tabular}%
-
-
-
-
-
-\begin{itemize}
-	\item $\SA$: $\textT[\SA[i-1]\IC{}n] \prec \textT[\SA[i]\IC{}n]~\forall i \in [2\IC{}n]$, suffix array~\cite{manber93sa}
-	\item $\LCPA[i] = \lcp(\SA[i-1], \SA[i])~\forall i \in [2\IC{}n]$, longest common prefix array
-	\item $\PLCP[ {\SA[i]} ] \coloneqq \LCPA[i]$, permuted LCP array~\cite{kasai01lcp}
-	\item $\LPF[j] \coloneqq \max\{\ell \mid \exists i \in [1\IC{}j-1] : \textT[i\IC{}i+\ell-1] = \textT[j\IC{}j+\ell-1]\}$, longest previous factor array~\cite{franek03lpf,crochemore08lpf}
-	\item   $\arrC[i] := \abs{\menge{j \in [1\IC{}n] : \textT[j] < i}}$
-\end{itemize}
-backward
-\begin{itemize}
-   \item $\LF[i] := C[\BWT[i]] + \BWT.\rank_{L[i]}(i)$
-   \item $\LF[i] = \ISA[\SA[i] - 1]$~\cite{ferragina05index}
-	\item $\BWT[i] \coloneqq \textT[\SA[i]-1]~\forall i \not= \ISA[1]$, $\BWT[\ISA[1]] \coloneqq \textT[n] = \EndZeichen$, Burrows-Wheeler transform~\cite{burrows94bwt}
-	\item $\Phi[i] \coloneqq \SA[ {\ISA[i]} - 1]~\forall i \not= \ISA[1]$, $\Phi[\ISA[1]] \coloneqq n$~\cite{karkkainen09plcp}
-	\item $\Phi^{k}[i] = \SA[ ({\ISA[i]} + n - k-1 \mod n) + 1]~\forall i,k \in [1\IC{}n]$.
-\end{itemize}
-forward
-\begin{itemize}
-	\item $\Psi[i] \coloneqq \ISA[ {\SA[i]} + 1 ]~\forall i \not= \ISA[n]$, $\Psi[\ISA[n]] \coloneqq \ISA[1]$
-	\item $\Psi[i] = \select_c(\BWT, j)$, $c := \max {c \in \Sigma : C[c] < i}$~\cite{grossi05csa}
-	\item $\Psi^{k}[i] = \SA[ ({\ISA[i]} + k-1 \mod n) + 1]~\forall i,k \in [1\IC{}n]$.
-\end{itemize}
+\end{flushright} 
+\end{minipage}
+\end{multicols}
 properties
 \begin{itemize}
 	\item    $\Psi \mid_{[C[c]+1,C[c+1]}$ strictly increasing $\forall c \in \Sigma$.
@@ -318,6 +349,24 @@ reducible LCP values
 
 Periodicity Lemma~\cite{fine65uniqueness}:
 $\textT$ has periods~$p$ and~$p'$ with $p+p' \le \abs{\textT} \Rightarrow \gcd(p,p')$ is period of~$\textT$.
+
+\begin{itemize}
+   \item square $U^2$ irreducible $:\Leftrightarrow U$ is not a repetition.
+   \item square $U^2$ minimal $:\Leftrightarrow \nexists P$ proper prefix of $U^2 : P$ is square
+   \item square $U^2$ minimal $\Rightarrow U^2$ is irreducible
+\end{itemize}
+
+Three Squares Lemma~\cite{fan06periodicity}: If
+\begin{multicols}{3}
+\begin{itemize}
+   \item $U$ not a repetition, 
+   \item $\nexists j \in \NN : V \not= U^j$,
+   \item $U^2$ prefix of $V^2$, and
+   \item $V^2$ proper prefix of $W^2$, 
+   \item[$\Rightarrow$] $|W| \ge |U| + |V|$.
+\end{itemize}
+\end{multicols}
+
 
 %TODO: period, exponent, primitive, palindrome, square
 
@@ -346,6 +395,8 @@ Let $\textT = F_1 \cdots F_z$.
 		\item $F_i$ longest Lyndon prefix of $\textT[\ibeg{F_i}\IC{}]$
 	\end{itemize}
 
+	Standard factorization: $T = UV$, where $V$ is the smallest proper suffix of $V$.
+
 
 \newcommand*{\SubStrPrev}[2]{\mathcal{S}_{#1}(#2)}
 
@@ -370,7 +421,7 @@ SAIS
 	\begin{itemize}
 	   \item $\textT[i] < \textT[i+1] \Rightarrow \textT[i\IC{}]$ is $S$-type ($\textT[i\IC{}] \prec \textT[i+1\IC{}]$)
 	   \item $\textT[i] > \textT[i+1] \Rightarrow \textT[i\IC{}]$ is $L$-type ($\textT[i\IC{}] \succ \textT[i+1\IC{}]$)
-	   \item $\textT[i] = \textT[i+1] \Rightarrow \textT[i\IC{}]$ type of $\textT[i+1\IC{}..]$
+	   \item $\textT[i] = \textT[i+1] \Rightarrow \textT[i\IC{}]$ has same type as $\textT[i+1\IC{}]$
 	   \item $\textT[i\IC{}]$ is $S$-type $\wedge$ $\textT[i-1\IC{}]$ is $L$-type $\Rightarrow \textT[i\IC{}]$ is $S^*$-type
 	\end{itemize}
 
@@ -385,34 +436,24 @@ operations
 	\end{itemize}
 
 
-entropy 
-\begin{itemize}
-\item Let $\Sigma \coloneqq \menge{c_1, \ldots, c_\sigma}$.
-	\item    $H_0(\textT) \coloneqq (1/n)\sum_{j=1}^{\sigma} n_j \lg(n/n_j)$, $n_j \coloneqq \abs{\menge{i : \textT[i] = c_j}}$
-	\item    $H_k(\textT) \coloneqq (1/n) \sum_{\textS \in \Sigma^k} \abs{\textT_{\textS}} H_0(\textT_{\textS})$,
-where $\textT_{\textS}$ is the concatenation of each character in $\textT$ that directly follows an occurrence of the substring~$\textS \in \Sigma^k$ in $\textT$.
-\end{itemize}
 
-
-
-word-packing: $T'[i] = T[(i-1) \gauss{\lg_\sigma n}+1 \IC{} (i+1) \gauss{\lg_\sigma n}]$
-
-\subsection{BWT Related}
-
-FM-index~\cite{ferragina00fmindex} backward search:
+Backward Search of FM-index~\cite{ferragina00fmindex}:
 \begin{itemize}
 	\item   $P:$ pattern
-	%TODO rewrite as LF-mapping
 	\item   $R_i$: range of the pattern $P[i\IC{}n]$, i.e., $\textT[\SA[j]\IC{}\SA[j]+i-1] = P[i\IC{}n] \Leftrightarrow j \in R_i$
-	\item $\ibeg{R_i} = \arrC[P[i]] + \rank(\ibeg{R_{i+1}} + 1, P[i])$
-	\item $\iend{R_i} = \arrC[P[i]] + \rank(\iend{R_{i+1}}, P[i])$
+	\item $\ibeg{R_i} = \arrC[P[i]] + \BWT.\rank(\ibeg{R_{i+1}} + 1, P[i]) = \LF[\ibeg{R_{i+1}}]$
+	   \item $\iend{R_i} = \arrC[P[i]] + \BWT.\rank(\iend{R_{i+1}}, P[i]) = \LF[\iend{R_{i+1}}]$
 \end{itemize}
 
+
+%% IBWT: String Inference from Longest-Common-Prefix Array
+
+%%TODO: Karp-Rabin, collision probability
 
 
 \end{multicols}
 
-\newpage
+% \newpage
 
 \begin{multicols}{3}
 \bibliographystyle{abbrv}
