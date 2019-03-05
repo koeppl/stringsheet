@@ -94,18 +94,20 @@
 
 \usepackage{lilyglyphs}
 
-\usepackage{fancyhdr}
-\fancyhf{} 
-\fancyhead[C]{{\Large{\textbf{String Sheet \twoBeamedQuavers}}}}
-\fancyhead[R]{\url{https://github.com/koeppl/stringsheet}}
-\renewcommand{\headrulewidth}{0pt}
-
 
 
 % -----------------------------------------------------------------------
 \begin{document}
-\thispagestyle{fancy}
-
+\begin{tabular}{*{3}{p{0.33\linewidth}}}
+	 &
+	 \multicolumn{1}{c}{{\Large{\textbf{String Sheet \twoBeamedQuavers}}}}
+	 &
+	 \url{https://github.com/koeppl/stringsheet}
+	 \\
+   \phantom{x} & 
+   \phantom{x} & 
+   \phantom{x} 
+      \end{tabular}
 
 \raggedright
 \footnotesize
@@ -127,23 +129,26 @@
 	\item $\textS \lhd \textT :\Leftrightarrow \textS[\lcp(\textS,\textT)] < \textT[\lcp(\textS,\textT)]$
 	\item $\textS \prec \textT :\Leftrightarrow  \textS \lhd \textT \vee \textS$ is proper prefix of $\textT$
 	\item $w \coloneqq$ word size
+	\item $n \coloneqq$ length of a given text~$T$
 \end{itemize}
 \end{multicols}
 
 alphabet $\Sigma$
+\begin{multicols}{2}
 \begin{itemize}
 	\item constant $:\Leftrightarrow \abs{\Sigma} = \Oh{1}$
-	\item integer $:\Leftrightarrow \abs{\Sigma} = n^{\Oh{1}}$ for problem size~$n$
-	\item finite $\abs{\Sigma} < \infty$
+	\item integer $:\Leftrightarrow \abs{\Sigma} = n^{\Oh{1}}$ 
+	\item finite $:\Leftrightarrow \abs{\Sigma} < \infty$
 	\item constant $\subset$ integer $\subset$ finite
 \end{itemize}
+\end{multicols}
 
 
-\section{entropy}
+
+entropy for alphabet $\Sigma \coloneqq \menge{c_1, \ldots, c_\sigma}$:
 \begin{itemize}
-\item Let $\Sigma \coloneqq \menge{c_1, \ldots, c_\sigma}$.
-	\item    $H_0(\textT) \coloneqq (1/n)\sum_{j=1}^{\sigma} n_j \lg(n/n_j)$, $n_j \coloneqq \abs{\menge{i : \textT[i] = c_j}}$
-	\item    $H_k(\textT) \coloneqq (1/n) \sum_{\textS \in \Sigma^k} \abs{\textT_{\textS}} H_0(\textT_{\textS})$,
+	\item    $H_0(\textT) \coloneqq (1/|T|)\sum_{j=1}^{\sigma} n_j \lg(|T|/n_j)$, $n_j \coloneqq \abs{\menge{i : \textT[i] = c_j}}$
+	\item    $H_k(\textT) \coloneqq (1/|T|) \sum_{\textS \in \Sigma^k} \abs{\textT_{\textS}} H_0(\textT_{\textS})$,
 where $\textT_{\textS}$ is the concatenation of each character in $\textT$ that directly follows an occurrence of the substring~$\textS \in \Sigma^k$ in $\textT$.
 \end{itemize}
 
@@ -151,10 +156,70 @@ where $\textT_{\textS}$ is the concatenation of each character in $\textT$ that 
 \begin{itemize}
    \item cell probe model: no cost for computation, counts only memory access $\Rightarrow$ for lower bounds~\cite{yao81sorted}
    \item pointer machine model: time for any random access is constant
-   \item word RAM model: pointer machine model $~+~ \lg n = \Oh{w}$ access in constant time~\cite{hagerup98sorting}
+   \item word RAM model: pointer machine model with access to $\lg n = \Oh{w}$ consecutive bits in constant time~\cite{hagerup98sorting}
    \item Transdichotomous model: word RAM model with $\lg n = \Ot{w}$~\cite{fredman93fusion}
 \end{itemize}
-In word RAM model: word-packing: $T'[i] = T[(i-1) \gauss{\lg_\sigma w}+1 \IC{} (i+1) \gauss{\lg_\sigma w}]$
+Word RAM model supports word-packed string $T'[i] = T[(i-1) \gauss{w / \lg\sigma}+1 \IC{} (i+1) \gauss{w/\lg\sigma}]$ with constant time operations
+
+
+\section{arrays}
+\begin{itemize}
+	\item $\SA$: $\textT[\SA[i-1]\IC{}n] \prec \textT[\SA[i]\IC{}n]~\forall i \in [2\IC{}n]$, suffix array~\cite{manber93sa}
+	\item $\LCPA[i] = \lcp(\SA[i-1], \SA[i])~\forall i \in [2\IC{}n]$, longest common prefix array
+	\item $\PLCP[ {\SA[i]} ] \coloneqq \LCPA[i]$, permuted LCP array~\cite{kasai01lcp}
+	\item $\LPF[j] \coloneqq \max\{\ell \mid \exists i \in [1\IC{}j-1] : \textT[i\IC{}i+\ell-1] = \textT[j\IC{}j+\ell-1]\}$, longest previous factor array~\cite{franek03lpf,crochemore08lpf}
+	\item   $\arrC[i] := \abs{\menge{j \in [1\IC{}n] : \textT[j] < i}}$
+\end{itemize}
+
+backward
+\begin{itemize}
+   \item $\LF[i] := C[\BWT[i]] + \BWT.\rank_{L[i]}(i)$
+   \item $\LF[i] = \ISA[\SA[i] - 1]$~\cite{ferragina05index}
+	\item $\BWT[i] \coloneqq \textT[\SA[i]-1]~\forall i \not= \ISA[1]$, $\BWT[\ISA[1]] \coloneqq \textT[n] = \EndZeichen$, Burrows-Wheeler transform~\cite{burrows94bwt}
+	\item $\Phi[i] \coloneqq \SA[ {\ISA[i]} - 1]~\forall i \not= \ISA[1]$, $\Phi[\ISA[1]] \coloneqq n$~\cite{karkkainen09plcp}
+	\item $\Phi^{k}[i] = \SA[ ({\ISA[i]} + n - k-1 \mod n) + 1]~\forall i,k \in [1\IC{}n]$.
+\end{itemize}
+
+\begin{multicols}{2}
+\begin{minipage}{\linewidth}
+forward
+\begin{itemize}
+   \item $\Psi[i] \coloneqq \ISA[ {\SA[i]} + 1 ]~\forall i \not= \ISA[n]$
+   \item $\Psi[\ISA[n]] \coloneqq \ISA[1]$~\cite{grossi05csa}
+\end{itemize}
+\end{minipage}
+\begin{minipage}{0.8\linewidth}
+\begin{flushright} 
+\begin{tabular}{|l|l|l|}
+   \hline
+   \diagbox{order}{dir} & $\leftarrow$ & $\rightarrow$ \\
+   \hline
+   \SA{} & $\LF$ & $\Psi$ \\
+   \hline
+   $\textT$  & $\Phi$ & \\
+   \hline
+\end{tabular}%
+\end{flushright} 
+\end{minipage}
+\end{multicols}
+\begin{itemize}
+   \item $\Psi^{k}[i] = \SA[ ({\ISA[i]} + k-1 \mod n) + 1]~\forall i,k \in [1\IC{}n]$.
+   \item $\Psi[i] = \BWT.\select_{T[\SA[i]]}(i - C[ T[\SA[i]]] )$~\cite{lee09rank}
+\end{itemize}
+
+properties
+\begin{itemize}
+   \item    $\Psi \mid_{[C[c]+1,C[c+1]]}$ strictly increasing $\forall c \in \Sigma$.
+	\item    $T[\SA[i]] = c \wedge \BWT[\Psi[i]] = c~\forall i \in [C[c]+1,C[c+1]]~\forall c \in \Sigma$
+\end{itemize}
+
+
+reducible LCP values
+\begin{itemize}
+	\item $\LCPA[i] = \PLCP[\SA[i]]$ reducible $:\Leftrightarrow$ $\BWT[i] = \BWT[i-1]$.
+	\item $\PLCP[i+1]$ reducible $\Leftrightarrow T[i] = T[\Phi[i]] \wedge \Psi[\ISA[\Phi[i]]] = \Psi[\ISA[i]]-1$. \cite{siren10plcp}
+	\item $\PLCP[i]$ reducible $\Rightarrow \PLCP[i] = \PLCP[i-1] - 1 \wedge \Phi[i] = \Phi[i-1]+1$. \cite{karkkainen09plcp}
+\end{itemize}
 
 
 \section{trees}
@@ -282,60 +347,7 @@ BP & (& (& (&)& (& (&)& (&)& )& (&)& )& (&)& (& (&)&  (& (&)& )&  )& ) \\
 \DrawId{2}{25}{1}{5em}
 \end{tikzpicture}
 
-\section{arrays}
-\begin{itemize}
-	\item $\SA$: $\textT[\SA[i-1]\IC{}n] \prec \textT[\SA[i]\IC{}n]~\forall i \in [2\IC{}n]$, suffix array~\cite{manber93sa}
-	\item $\LCPA[i] = \lcp(\SA[i-1], \SA[i])~\forall i \in [2\IC{}n]$, longest common prefix array
-	\item $\PLCP[ {\SA[i]} ] \coloneqq \LCPA[i]$, permuted LCP array~\cite{kasai01lcp}
-	\item $\LPF[j] \coloneqq \max\{\ell \mid \exists i \in [1\IC{}j-1] : \textT[i\IC{}i+\ell-1] = \textT[j\IC{}j+\ell-1]\}$, longest previous factor array~\cite{franek03lpf,crochemore08lpf}
-	\item   $\arrC[i] := \abs{\menge{j \in [1\IC{}n] : \textT[j] < i}}$
-\end{itemize}
 
-backward
-\begin{itemize}
-   \item $\LF[i] := C[\BWT[i]] + \BWT.\rank_{L[i]}(i)$
-   \item $\LF[i] = \ISA[\SA[i] - 1]$~\cite{ferragina05index}
-	\item $\BWT[i] \coloneqq \textT[\SA[i]-1]~\forall i \not= \ISA[1]$, $\BWT[\ISA[1]] \coloneqq \textT[n] = \EndZeichen$, Burrows-Wheeler transform~\cite{burrows94bwt}
-	\item $\Phi[i] \coloneqq \SA[ {\ISA[i]} - 1]~\forall i \not= \ISA[1]$, $\Phi[\ISA[1]] \coloneqq n$~\cite{karkkainen09plcp}
-	\item $\Phi^{k}[i] = \SA[ ({\ISA[i]} + n - k-1 \mod n) + 1]~\forall i,k \in [1\IC{}n]$.
-\end{itemize}
-
-\begin{multicols}{2}
-\begin{minipage}{\linewidth}
-forward
-\begin{itemize}
-	\item $\Psi[i] \coloneqq \ISA[ {\SA[i]} + 1 ]~\forall i \not= \ISA[n]$, $\Psi[\ISA[n]] \coloneqq \ISA[1]$
-	\item $\Psi[i] = \select_c(\BWT, j)$, $c := \max {c \in \Sigma : C[c] < i}$~\cite{grossi05csa}
-	\item $\Psi^{k}[i] = \SA[ ({\ISA[i]} + k-1 \mod n) + 1]~\forall i,k \in [1\IC{}n]$.
-\end{itemize}
-\end{minipage}
-\begin{minipage}{0.8\linewidth}
-\begin{flushright} 
-\begin{tabular}{|l|l|l|}
-   \hline
-   \diagbox{order}{dir} & $\leftarrow$ & $\rightarrow$ \\
-   \hline
-   \SA{} & $\LF$ & $\Psi$ \\
-   \hline
-   $\textT$  & $\Phi$ & \\
-   \hline
-\end{tabular}%
-\end{flushright} 
-\end{minipage}
-\end{multicols}
-properties
-\begin{itemize}
-	\item    $\Psi \mid_{[C[c]+1,C[c+1]}$ strictly increasing $\forall c \in \Sigma$.
-	\item    $T[\SA[i]] = c \wedge \BWT[\Psi[i]] = c \forall i \in [C[c]+1,C[c+1] \forall c \in \Sigma$
-\end{itemize}
-
-
-reducible LCP values
-\begin{itemize}
-	\item $\LCPA[i] = \PLCP[\SA[i]]$ reducible $:\Leftrightarrow$ $\BWT[i] = \BWT[i-1]$.
-	\item $\PLCP[i+1]$ reducible $\Leftrightarrow T[i] = T[\Phi[i]] \wedge \Psi[\ISA[\Phi[i]]] = \Psi[\ISA[i]]-1$. \cite{siren10plcp}
-	\item $\PLCP[i]$ reducible $\Rightarrow \PLCP[i] = \PLCP[i-1] - 1 \wedge \Phi[i] = \Phi[i-1]+1$. \cite{karkkainen09plcp}
-\end{itemize}
 
 
 
@@ -429,7 +441,7 @@ operations
 	\begin{itemize}
 	   \item $\textT.\psv(j) \coloneqq \max \{ k < j \mid \textT[k] < \textT[j] \}$ previous smaller value
 	   \item $\textT.\nsv(j) \coloneqq \min \{ k > j \mid \textT[k] < \textT[j] \}$ next smaller value
-	   \item $\textT.\rank_c(j) \coloneqq \menge{ k \in [1\IC{}j] \mid \textT[k] = c }$ rank query
+	   \item $\textT.\rank_c(j) \coloneqq \abs{\menge{ k \in [1\IC{}j] \mid \textT[k] = c } }$ rank query
 	   \item $\textT.\select_c(k) \coloneqq \min \menge{j \mid \textT.\rank_c(j) = k}$ select query
 	   \item $\textT.\RMQ[a,b] \coloneqq \argmin_{i \in [a\IC{}b]} T[i]$ range minimum query
 	   \item $\textT.\lce(a,b) \coloneqq \lcp(T[a\IC{}],T[b\IC{}]) = \LCPA.\RMQ[\min(\ISA[a],\ISA[b])+1\IC{}\max(\ISA[a],\ISA[b])]$ longest common extension
@@ -441,8 +453,9 @@ Backward Search of FM-index~\cite{ferragina00fmindex}:
 \begin{itemize}
 	\item   $P:$ pattern
 	\item   $R_i$: range of the pattern $P[i\IC{}n]$, i.e., $\textT[\SA[j]\IC{}\SA[j]+i-1] = P[i\IC{}n] \Leftrightarrow j \in R_i$
-	\item $\ibeg{R_i} = \arrC[P[i]] + \BWT.\rank(\ibeg{R_{i+1}} + 1, P[i]) = \LF[\ibeg{R_{i+1}}]$
-	   \item $\iend{R_i} = \arrC[P[i]] + \BWT.\rank(\iend{R_{i+1}}, P[i]) = \LF[\iend{R_{i+1}}]$
+	\item $\ibeg{R_i} = \arrC[P[i]] + \BWT.\rank_{P[i]}(\ibeg{R_{i+1}}-1)+1$
+        \item $\ibeg{R_i} = \LF[ \BWT.\select_{P[i]}( \BWT.\rank_{P[i]}(\ibeg{R_{i+1}}-1)+1)]$
+	\item $\iend{R_i} = \arrC[P[i]] + \BWT.\rank_{P[i]}(\iend{R_{i+1}})$
 \end{itemize}
 
 
