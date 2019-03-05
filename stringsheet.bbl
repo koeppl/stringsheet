@@ -1,0 +1,121 @@
+\begin{thebibliography}{10}
+
+\bibitem{benoit05dfuds}
+D.~Benoit, E.~D. Demaine, J.~I. Munro, R.~Raman, V.~Raman, and S.~S. Rao.
+\newblock Representing trees of higher degree.
+\newblock {\em Algorithmica}, 43(4):275--292, 2005.
+
+\bibitem{burrows94bwt}
+M.~Burrows and D.~J. Wheeler.
+\newblock A block sorting lossless data compression algorithm.
+\newblock Technical Report 124, Digital Equipment Corporation, Palo Alto,
+  California, 1994.
+
+\bibitem{chen58lyndon}
+K.~T. Chen, R.~H. Fox, and R.~C. Lyndon.
+\newblock Free differential calculus, {IV}. {T}he quotient groups of the lower
+  central series.
+\newblock {\em Annals of Mathematics}, pages 81--95, 1958.
+
+\bibitem{crochemore08lpf}
+M.~Crochemore and L.~Ilie.
+\newblock Computing longest previous factor in linear time and applications.
+\newblock {\em Inf. Process. Lett.}, 106(2):75--80, 2008.
+
+\bibitem{fan06periodicity}
+K.~Fan, S.~J. Puglisi, W.~F. Smyth, and A.~Turpin.
+\newblock A new periodicity lemma.
+\newblock {\em {SIAM} J. Discrete Math.}, 20(3):656--668, 2006.
+
+\bibitem{ferragina00fmindex}
+P.~Ferragina and G.~Manzini.
+\newblock Opportunistic data structures with applications.
+\newblock In {\em Proc.\ FOCS}, pages 390--398, 2000.
+
+\bibitem{ferragina05index}
+P.~Ferragina and G.~Manzini.
+\newblock Indexing compressed text.
+\newblock {\em J. {ACM}}, 52(4):552--581, 2005.
+
+\bibitem{fine65uniqueness}
+N.~J. Fine and H.~S. Wilf.
+\newblock Uniqueness theorems for periodic functions.
+\newblock {\em Proceedings of the American Mathematical Society},
+  16(1):109--114, 1965.
+
+\bibitem{franek03lpf}
+F.~Franek, J.~Holub, W.~F. Smyth, and X.~Xiao.
+\newblock Computing quasi suffix arrays.
+\newblock {\em Journal of Automata, Languages and Combinatorics},
+  8(4):593--606, 2003.
+
+\bibitem{fredman93fusion}
+M.~L. Fredman and D.~E. Willard.
+\newblock Surpassing the information theoretic bound with fusion trees.
+\newblock {\em J. Comput. Syst. Sci.}, 47(3):424--436, 1993.
+
+\bibitem{grossi05csa}
+R.~Grossi and J.~S. Vitter.
+\newblock Compressed suffix arrays and suffix trees with applications to text
+  indexing and string matching.
+\newblock {\em {SIAM} J. Comput.}, 35(2):378--407, 2005.
+
+\bibitem{hagerup98sorting}
+T.~Hagerup.
+\newblock Sorting and searching on the word {RAM}.
+\newblock In {\em Proc.\ STACS}, volume 1373 of {\em LNCS}, pages 366--398,
+  1998.
+
+\bibitem{jacobson89rank}
+G.~Jacobson.
+\newblock Space-efficient static trees and graphs.
+\newblock In {\em Proc.\ FOCS}, pages 549--554, 1989.
+
+\bibitem{karkkainen09plcp}
+J.~K{\"{a}}rkk{\"{a}}inen, G.~Manzini, and S.~J. Puglisi.
+\newblock Permuted longest-common-prefix array.
+\newblock In {\em Proc.\ CPM}, volume 5577 of {\em LNCS}, pages 181--192, 2009.
+
+\bibitem{kasai01lcp}
+T.~Kasai, G.~Lee, H.~Arimura, S.~Arikawa, and K.~Park.
+\newblock Linear-time longest-common-prefix computation in suffix arrays and
+  its applications.
+\newblock In {\em Proc.\ CPM}, volume 2089 of {\em LNCS}, pages 181--192, 2001.
+
+\bibitem{lee09rank}
+S.~Lee and K.~Park.
+\newblock Dynamic rank/select structures with applications to run-length
+  encoded texts.
+\newblock {\em Theor. Comput. Sci.}, 410(43):4402--4413, 2009.
+
+\bibitem{manber93sa}
+U.~Manber and E.~W. Myers.
+\newblock Suffix arrays: {A} new method for on-line string searches.
+\newblock {\em {SIAM} J. Comput.}, 22(5):935--948, 1993.
+
+\bibitem{siren10plcp}
+J.~Sir{\'{e}}n.
+\newblock Sampled longest common prefix array.
+\newblock In {\em Proc.\ CPM}, volume 6129 of {\em LNCS}, pages 227--237, 2010.
+
+\bibitem{storer82lzss}
+J.~A. Storer and T.~G. Szymanski.
+\newblock Data compression via textural substitution.
+\newblock {\em J. {ACM}}, 29(4):928--951, 1982.
+
+\bibitem{yao81sorted}
+A.~C. Yao.
+\newblock Should tables be sorted?
+\newblock {\em J. {ACM}}, 28(3):615--628, 1981.
+
+\bibitem{ziv77lz}
+J.~Ziv and A.~Lempel.
+\newblock A universal algorithm for sequential data compression.
+\newblock {\em {IEEE} Trans. Information Theory}, 23(3):337--343, 1977.
+
+\bibitem{ziv78lz}
+J.~Ziv and A.~Lempel.
+\newblock Compression of individual sequences via variable-rate coding.
+\newblock {\em {IEEE} Trans. Information Theory}, 24(5):530--536, 1978.
+
+\end{thebibliography}
