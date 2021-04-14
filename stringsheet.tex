@@ -428,6 +428,7 @@ Equivalently: $F_i = T[k\IC{}k+\max(1,\LPF[k])]$ with $k \coloneqq \sum_{j=1}^{i
 $F_x \coloneqq \argmax \menge{ \abs{S} \mid S \in \Sigma^* \text{~occurs in~} T[1\IC{}j] \text{~or~} S \in \Sigma}~\forall
 x \in [1\IC{}z]$, where $j \coloneqq \abs{F_1\cdots F_{x-1}}$.
 
+$\delta(T) := \max_{k \in [1..n]} |\{ T[i..i+k-1] \mid i \in [1..n-k+1] \}|/k$~\cite{raskhodnikova13sublinear}.
 
 
 SAIS
@@ -467,14 +468,15 @@ Backward Search of FM-index~\cite{ferragina00fmindex}:
 Stirling's formula:
 \begin{itemize}
    \item $n! = n^n e^{-n} \Oh{\sqrt{n}}$
-   \item $\lg_{2} (n!) = n\lg_{2} n - n \lg_{2} e + \Oh{\lg_{2} n}$
+   \item $\lg (n!) = n \lg n - n \lg e + \Oh{\log n}$
+   \item $\lg \binom{n}{m} = n \lg{n} - m \lg{m} - (n-m) \lg (n-m) - \Oh{\log{n}}$
 \end{itemize}
-
 \end{multicols}
 
 % \newpage
 
 \begin{multicols}{3}
+\tiny
 \bibliographystyle{abbrv}
 \bibliography{literature}
 \end{multicols}

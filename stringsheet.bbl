@@ -93,6 +93,11 @@ U.~Manber and E.~W. Myers.
 \newblock Suffix arrays: {A} new method for on-line string searches.
 \newblock {\em {SIAM} J. Comput.}, 22(5):935--948, 1993.
 
+\bibitem{raskhodnikova13sublinear}
+S.~Raskhodnikova, D.~Ron, R.~Rubinfeld, and A.~D. Smith.
+\newblock Sublinear algorithms for approximating string compressibility.
+\newblock {\em Algorithmica}, 65(3):685--709, 2013.
+
 \bibitem{siren10plcp}
 J.~Sir{\'{e}}n.
 \newblock Sampled longest common prefix array.
